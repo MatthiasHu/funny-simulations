@@ -34,13 +34,14 @@ while not quit:
   bvy += (my-by)/bm*pull_m_b
   bvx += (ax-bx)/bm*pull_b_a
   bvy += (ay-by)/bm*pull_b_a
-  bx += bvx
-  by += bvy
-
   avx += (bx-ax)/am*pull_b_a
   avy += (by-ay)/am*pull_b_a
+
+  bx += bvx
+  by += bvy
   ax += avx
   ay += avy
+
   if pygame.key.get_pressed()[K_r]:
     bvx *= 0.99
     bvy *= 0.99
