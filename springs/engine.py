@@ -7,11 +7,12 @@ screen = display.set_mode((1000, 1000))
 
 class Particle:
   def __init__(self, pos, vel=[0, 0], mass=1,
-               friction=0.998, pinned=False):
+               friction=0.998, gravity=0.01, pinned=False):
     self.pos =  pos
     self.vel = vel
     self.mass = mass
     self.friction = friction
+    self.gravity = gravity
     self.pinned = pinned
 
   def move(self):
@@ -27,7 +28,11 @@ class Particle:
     if friction == None:
       friction = self.friction
     self.vel = [self.vel[i]*friction for i in [0, 1]]
-    
+
+  def apply_gravity(self, gravity=None):
+    if gravity == None:
+      gravity = self.gravity
+    self.receive_force([0, gravity*self.mass])
 
 class Spring:
   def __init__(self, ends, rate=0.01, equi_length=0):
@@ -56,7 +61,7 @@ def spring_deflection(a, b, equi_length):
 
 def string_of_springs():
   length = 30
-  ps = [Particle([100+20*i, 100], mass=0.1) for i in range(length+1)]
+  ps = [Particle([100+20*i, 100], mass=0.2) for i in range(length+1)]
   ps[0].pinned = True
   ps[-1].pinned = True
   ss = [Spring([ps[i], ps[i+1]], equi_length=10) for i in range(length)]
@@ -76,9 +81,10 @@ while not quit:
   for s in springs:
     s.apply_force_to_ends()
   for p in particles:
+    p.apply_gravity()
+    p.apply_friction()
     if key.get_pressed()[K_r]:
       p.apply_friction(0.95)
-    p.apply_friction()
     p.move()
 
   mpos = mouse.get_pos()
