@@ -67,7 +67,29 @@ def string_of_springs():
   ss = [Spring([ps[i], ps[i+1]], equi_length=10) for i in range(length)]
   return (ps, ss)
 
-(particles, springs) = string_of_springs()
+def squares_tower():
+  height = 8
+  width = 2
+  l = 40
+  ps = [[Particle([200+x*l, 500-y*l], mass=0.2) for x in range(width+1)]
+        for y in range(height+1)]
+  for p in ps[0]:
+    p.pinned = True
+  for p in ps[-1]:
+    p.vel[0] = 0.1
+  ss = []
+  ss += [Spring([ps[y][x], ps[y][x+1]], equi_length=l)
+         for y in range(height+1) for x in range(width)]
+  ss += [Spring([ps[y][x], ps[y+1][x]], equi_length=l)
+         for y in range(height) for x in range(width+1)]
+  ss += [Spring([ps[y][x], ps[y+1][x+1]], equi_length=l*sqrt(2))
+         for y in range(height) for x in range(width)]
+  ss += [Spring([ps[y][x+1], ps[y+1][x]], equi_length=l*sqrt(2))
+         for y in range(height) for x in range(width)]
+  ps = [p for ps1 in ps for p in ps1]
+  return (ps, ss)
+
+(particles, springs) = squares_tower()
 
 
 grabbed = None
