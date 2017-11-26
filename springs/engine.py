@@ -6,10 +6,10 @@ screen = display.set_mode((1000, 1000))
 
 
 class Particle:
-  def __init__(self, pos, vel=[0, 0], mass=1,
+  def __init__(self, pos, vel=None, mass=1,
                friction=0.998, gravity=0.01, pinned=False):
-    self.pos =  pos
-    self.vel = vel
+    self.pos = pos
+    self.vel = [0, 0] if vel is None else vel
     self.mass = mass
     self.friction = friction
     self.gravity = gravity
@@ -25,12 +25,13 @@ class Particle:
       self.vel[i] += f[i]/self.mass
 
   def apply_friction(self, friction=None):
-    if friction == None:
+    if friction is None:
       friction = self.friction
-    self.vel = [self.vel[i]*friction for i in [0, 1]]
+    for i in [0, 1]:
+      self.vel[i] *= friction
 
   def apply_gravity(self, gravity=None):
-    if gravity == None:
+    if gravity is None:
       gravity = self.gravity
     self.receive_force([0, gravity*self.mass])
 
@@ -111,7 +112,7 @@ while not quit:
 
   mpos = mouse.get_pos()
   if mouse.get_pressed()[0]:
-    if grabbed==None:
+    if grabbed is None:
       nearest = None
       bestDistQ = float("inf")
       for p in particles:
